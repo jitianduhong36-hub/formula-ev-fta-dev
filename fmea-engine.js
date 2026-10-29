@@ -1,8 +1,8 @@
-import {displayId,systemText} from './event-codes.js?v=imports1';
-import {validate,analyze} from './engine.js?v=imports1';
-import {eventGroup} from './groups.js?v=imports1';
-import {draftNotice,fmeaConfig,autoOccurrence,rpn,validScore} from './fmea-config.js?v=imports1';
-import {rowId} from './fmea-model.js?v=imports1';
+import {displayId,systemText} from './event-codes.js?v=imports2';
+import {validate,analyze} from './engine.js?v=imports2';
+import {eventGroup} from './groups.js?v=imports2';
+import {draftNotice,fmeaConfig,autoOccurrence,rpn,validScore} from './fmea-config.js?v=imports2';
+import {rowId} from './fmea-model.js?v=imports2';
 export function graphIndex(model){const nodes=validate(model),parents=new Map(model.nodes.map(n=>[n.id,[]]));for(const n of model.nodes)for(const id of new Set(n.children||[]))parents.get(id).push(n.id);return {nodes,parents};}
 export function reachableFrom(nodes,top){const seen=new Set();function visit(id){if(seen.has(id))return;seen.add(id);for(const c of nodes.get(id).children||[])visit(c);}visit(top);return seen;}
 export function extractPaths(model,basic,top,limit=fmeaConfig.maxPathsPerRow,index=graphIndex(model)){

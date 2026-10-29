@@ -1,6 +1,6 @@
-import {nextEventCode} from './event-codes.js?v=imports1';
-import {validate} from './engine.js?v=imports1';
-import {newNodeId} from './collaboration.js?v=imports1';
+import {nextEventCode} from './event-codes.js?v=imports2';
+import {validate} from './engine.js?v=imports2';
+import {newNodeId} from './collaboration.js?v=imports2';
 const copy=x=>JSON.parse(JSON.stringify(x));
 export function localKey(hash){const id=new URLSearchParams(hash.replace(/^#/,'' )).get('local');return id&&/^[a-f0-9-]{36}$/i.test(id)?'fta-dev-local:'+id:'formula-ev-fta-dev-v1';}
 export function blankSheet(title='新しい解析'){return {version:1,title:title.trim()||'新しい解析',mission:'未設定（評価期間を入力）',top:'TOP',nodes:[{id:'TOP',label:'解析したい故障（名称を変更）',type:'BASIC',p:0}]};}

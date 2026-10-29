@@ -1,8 +1,8 @@
-import {validateImportedRows} from './import-validation.js?v=imports1';
-import {validateTrees} from './tree-metadata.js?v=imports1';
-import {validateGroups} from './groups.js?v=imports1';
-import {limits,validateSize} from './limits.js?v=imports1';
-import {validateFmea} from './fmea-model.js?v=imports1';
+import {validateImportedRows} from './import-validation.js?v=imports2';
+import {validateTrees} from './tree-metadata.js?v=imports2';
+import {validateGroups} from './groups.js?v=imports2';
+import {limits,validateSize} from './limits.js?v=imports2';
+import {validateFmea} from './fmea-model.js?v=imports2';
 export function validate(m){
  if(!m||m.version!==1||!Array.isArray(m.nodes)||m.nodes.length>limits.maxNodes)throw Error('形式が不正です（version:1、最大300ノード）');
  validateSize(m);validateFmea(m);validateImportedRows(m);

@@ -1,13 +1,14 @@
-import {validate} from './engine.js?v=imports1';
-import {descendants,connect,disconnect,moveConnection} from './tree-edit.js?v=imports1';
-import {ensureFmea,rowId,splitRowId} from './fmea-model.js?v=imports1';
-import {nextEventCode,displayId} from './event-codes.js?v=imports1';
+import {validate} from './engine.js?v=imports2';
+import {descendants,connect,disconnect,moveConnection} from './tree-edit.js?v=imports2';
+import {ensureFmea,rowId,splitRowId} from './fmea-model.js?v=imports2';
+import {nextEventCode,displayId} from './event-codes.js?v=imports2';
 const copy=x=>structuredClone(x),fresh=prefix=>prefix+crypto.randomUUID();
-import {trees} from './tree-metadata.js?v=imports1';
-export {trees} from './tree-metadata.js?v=imports1';
+import {trees} from './tree-metadata.js?v=imports2';
+export {trees} from './tree-metadata.js?v=imports2';
 export function registerRoot(model,rootId,title){const m=copy(model);m.trees=copy(trees(m));if(!m.nodes.some(n=>n.id===rootId))throw Error('登録する事象がありません');if(m.trees.some(t=>t.rootId===rootId))throw Error('このルートは登録済みです');m.trees.push({id:fresh('tree-'),rootId,title:title.trim()});validate(m);return m;}
 export function addTree(model,title){if(!title.trim())throw Error('木の名前を入力してください');const m=copy(model);m.trees=copy(trees(m));const id=fresh('E_');m.nodes.push({id,code:nextEventCode(m,'EVT'),system:'EVT',label:title.trim(),type:'BASIC',p:0});m.trees.push({id:fresh('tree-'),rootId:id,title:title.trim()});m.top=id;validate(m);return m;}
 export function branchOperation(model,{child,parent,from,mode}){
+ if(mode!=='attach'&&!from)throw Error('元の親を選択してください。未接続の事象は「別の親に接続」を使ってください');
  if(mode==='attach')return connect(model,parent,child);
  if(mode==='move')return moveConnection(model,child,from,parent);
  if(mode==='detach')return disconnect(model,from,child);
@@ -24,7 +25,7 @@ export function mergeTreeModels(destination,source,{parent=null,filename='FTA JS
  for(const p of source.fmea?.parts||[]){let id=p.id,i=1;while(m.fmea.parts.some(x=>x.id===id))id=p.id.slice(0,60)+'_I'+i++;partMap.set(p.id,id);m.fmea.parts.push({...copy(p),id,basicIds:p.basicIds.map(mapId)});}
  for(const [key,row]of Object.entries(source.fmea?.rows||{})){const ids=splitRowId(key);if(ids){const r=copy(row);delete r.reviewedHash;m.fmea.rows[rowId(mapId(ids.basicId),mapId(ids.topId))]=r;}}
  for(const [id,s]of Object.entries(source.fmea?.topSeverity||{}))m.fmea.topSeverity[mapId(id)]=s;
- if(source.fmea?.importedRows?.length){m.fmea.importedRows=m.fmea.importedRows||[];for(const r of source.fmea.importedRows)m.fmea.importedRows.push({...copy(r),id:fresh('IM-'),partId:partMap.get(r.partId)||r.partId});}
+ if(source.fmea?.importedRows?.length){m.fmea.importedRows=m.fmea.importedRows||[];for(const r of source.fmea.importedRows){if(!partMap.has(r.partId))partMap.set(r.partId,fresh('IM-P-'));m.fmea.importedRows.push({...copy(r),id:fresh('IM-'),partId:partMap.get(r.partId),originalPartId:r.partId});}}
  const rootId=mapId(source.top);if(renamed)warnings.push(renamed+'件の表示IDの重複を _I番号 で区別しました');
  warnings.push('取り込んだ事象は新しい内部IDです。既存事象とは独立として計算します。同じ物理原因なら取り込み後に既存事象へ明示的につなぎ替えてください。');
  if(source.mission!==destination.mission)warnings.push('評価期間・条件が異なります。接続・確率比較の前に揃えてください。');

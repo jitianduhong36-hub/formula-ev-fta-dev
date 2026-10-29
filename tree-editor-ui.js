@@ -1,6 +1,6 @@
-import {displayId} from './event-codes.js?v=imports1';
-import {matchesEvent,eventGroup} from './groups.js?v=imports1';
-import {parentsOf,descendants,connect,disconnect,moveConnection,deleteEvent} from './tree-edit.js?v=imports1';
+import {displayId} from './event-codes.js?v=imports2';
+import {matchesEvent,eventGroup} from './groups.js?v=imports2';
+import {parentsOf,descendants,connect,disconnect,moveConnection,deleteEvent} from './tree-edit.js?v=imports2';
 const $=id=>document.getElementById(id),copy=x=>JSON.parse(JSON.stringify(x)),same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 export function setupTreeEditor({getModel,getSelected,applyModel,isFormDirty,notice}){
  let undo=[],redo=[],pending=null,locked=false;

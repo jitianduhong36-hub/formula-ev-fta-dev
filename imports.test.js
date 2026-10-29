@@ -35,3 +35,8 @@ test('merged models enforce limits and malformed archive records cannot bypass v
 test('vendored SheetJS reads legacy XLS and XLSX without executing formula or macro code',()=>{
  const context=vm.createContext({console});vm.runInContext(readFileSync(new URL('./vendor/xlsx.full.min.js',import.meta.url),'utf8'),context);const X=context.XLSX;assert.equal(X.version,'0.20.3');const wb=X.utils.book_new();X.utils.book_append_sheet(wb,X.utils.aoa_to_sheet(table),'過去FMEA');for(const bookType of ['xlsx','xls']){const bytes=X.write(wb,{type:'buffer',bookType});const out=X.read(bytes,{type:'array',sheetRows:1051,cellFormula:false,cellHTML:false,dense:true});const data=X.utils.sheet_to_json(out.Sheets[out.SheetNames[0]],{header:1,raw:false,defval:''});assert.equal(data[2][1],'電池セル');assert.equal(guessHeader(data),1);}
 });
+
+test('native part JSON IDs and multiple row mappings survive import, including own exported score labels',()=>{
+ const rows=tableFromJson({parts:[{id:'P-NATIVE',name:'電源',basicIds:['LV']}]});const result=planTableImport(sample,rows,suggestMapping(rows[0]));assert.deepEqual(result.errors,[]);assert.equal(result.model.fmea.parts[0].id,'P-NATIVE');
+ const multi=[['部品ID','部品名称','故障モード','基本事象ID','S（重大度）','O（発生度）','D（検出度）'],['P','電源','故障A','LV',8,3,2],['P','電源','故障B','CAN',8,2,'']];const plan=planTableImport(sample,multi,suggestMapping(multi[0]),{kind:'fmea'});assert.deepEqual(plan.errors,[]);assert.deepEqual(plan.model.fmea.parts[0].basicIds,['LV','CAN']);assert.equal(plan.model.fmea.importedRows[0].S,8);
+});

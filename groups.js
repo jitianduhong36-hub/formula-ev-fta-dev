@@ -1,4 +1,4 @@
-import {systemText,validateEventCodes} from './event-codes.js?v=imports1';
+import {systemText,validateEventCodes} from './event-codes.js?v=imports2';
 export const groupColors=[
  {color:'#1565c0',fill:'#eaf2ff',name:'青'}, {color:'#ad3d13',fill:'#fff0e8',name:'橙'},
  {color:'#28743b',fill:'#eaf7ed',name:'緑'}, {color:'#743da6',fill:'#f4edff',name:'紫'},

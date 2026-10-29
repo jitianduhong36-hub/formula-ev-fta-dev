@@ -1,4 +1,4 @@
-# Formula Analysis Lab — 開発・テスト版 0.2
+# Formula Analysis Lab — 開発・テスト版 0.3
 
 現行版とは別の試作です。現行リポジトリ `jitianduhong36-hub/formula-ev-fta` と公開URLは変更しません。
 
