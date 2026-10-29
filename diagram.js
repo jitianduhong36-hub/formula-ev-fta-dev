@@ -1,5 +1,5 @@
-import {displayId} from './event-codes.js?v=capacity1';
-import {eventGroup,groupTheme} from './groups.js?v=capacity1';
+import {displayId} from './event-codes.js?v=capacity2';
+import {eventGroup,groupTheme} from './groups.js?v=capacity2';
 // Expand each model event only once. Other occurrences are references to the
 // same ID, so every displayed branch has its own lane without changing the FTA.
 export function layoutDiagram(model,options={}){

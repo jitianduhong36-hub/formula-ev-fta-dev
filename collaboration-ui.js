@@ -1,5 +1,5 @@
-import {storageState} from './model-storage.js?v=capacity1';
-import {localKey} from './sheets.js?v=capacity1';
+import {storageState} from './model-storage.js?v=capacity2';
+import {localKey} from './sheets.js?v=capacity2';
 export function setupCollaboration({isDraft}){
  const $=id=>document.getElementById(id);
  function status(){$('sync-status').textContent='開発版 / 端末内保存';$('cloud-state').textContent=storageState.error?'保存失敗 · JSON保存で退避':isDraft()?'入力中 · 変更の反映待ち':storageState.saving?'端末内データベースに保存中…':'開発版専用の端末内保存済み';}

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {analyze,validate} from './engine.js';
 import {renderDiagram,layoutDiagram} from './diagram.js';
 import {generateFmea} from './fmea-engine.js';
-import {configurePerformance,defaultPerformance,normalizePerformance} from './performance-config.js?v=capacity1';
+import {configurePerformance,defaultPerformance,normalizePerformance} from './performance-config.js?v=capacity2';
 const b=(id,p=.001)=>({id,label:id,type:'BASIC',p}),g=(id,children,type='OR')=>({id,label:id,type,children});
 const star=n=>({version:1,title:'大規模試験',top:'TOP',nodes:[g('TOP',Array.from({length:n-1},(_,i)=>'B'+i)),...Array.from({length:n-1},(_,i)=>b('B'+i,.0001))]});
 test('device caps can be raised without changing the model, and invalid settings reject',()=>{try{configurePerformance({maxNodes:100});assert.throws(()=>validate(star(101)),/上限/);configurePerformance({maxNodes:1000});validate(star(101));assert.throws(()=>normalizePerformance({maxNodes:100001}),/100,000/);assert.throws(()=>normalizePerformance({seconds:0}),/整数/);}finally{configurePerformance(defaultPerformance);}});

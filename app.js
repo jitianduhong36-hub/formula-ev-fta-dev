@@ -1,19 +1,19 @@
-import {runJob,cancelJob,progressText} from './compute-client.js?v=capacity1';
-import {getPerformance,savePerformance} from './performance-config.js?v=capacity1';
-import {loadModel,saveModel,storageState} from './model-storage.js?v=capacity1';
-import {setupPerformanceUi} from './performance-ui.js?v=capacity1';
-import {setupImportUi} from './import-ui.js?v=capacity1';
-import {setupWorkspace} from './workspace-ui.js?v=capacity1';
-import {systems,displayId,nextEventCode} from './event-codes.js?v=capacity1';
-import {setupFmea} from './fmea-ui.js?v=capacity1';
-import {limits,sizeMessage} from './limits.js?v=capacity1';
-import {eventGroup,groupTheme,matchesEvent} from './groups.js?v=capacity1';
-import {setupGroups} from './group-ui.js?v=capacity1';
+import {runJob,cancelJob,progressText} from './compute-client.js?v=capacity2';
+import {getPerformance,savePerformance} from './performance-config.js?v=capacity2';
+import {loadModel,saveModel,storageState} from './model-storage.js?v=capacity2';
+import {setupPerformanceUi} from './performance-ui.js?v=capacity2';
+import {setupImportUi} from './import-ui.js?v=capacity2';
+import {setupWorkspace} from './workspace-ui.js?v=capacity2';
+import {systems,displayId,nextEventCode} from './event-codes.js?v=capacity2';
+import {setupFmea} from './fmea-ui.js?v=capacity2';
+import {limits,sizeMessage} from './limits.js?v=capacity2';
+import {eventGroup,groupTheme,matchesEvent} from './groups.js?v=capacity2';
+import {setupGroups} from './group-ui.js?v=capacity2';
 
-import {validate} from './engine.js?v=capacity1';import {sample} from './sample.js?v=capacity1';
-import {newNodeId} from './collaboration.js?v=capacity1';import {setupCollaboration} from './collaboration-ui.js?v=capacity1';
-import {localKey,addChild,setupSheets} from './sheets.js?v=capacity1';
-import {setupTreeEditor} from './tree-editor-ui.js?v=capacity1';
+import {validate} from './engine.js?v=capacity2';import {sample} from './sample.js?v=capacity2';
+import {newNodeId} from './collaboration.js?v=capacity2';import {setupCollaboration} from './collaboration-ui.js?v=capacity2';
+import {localKey,addChild,setupSheets} from './sheets.js?v=capacity2';
+import {setupTreeEditor} from './tree-editor-ui.js?v=capacity2';
 const $=id=>document.getElementById(id),clone=x=>JSON.parse(JSON.stringify(x)),esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 let model=clone(sample),selected='TOP',lastSVG='',startupRecovery=null;try{const saved=await loadModel(localKey(location.hash));if(saved){try{validate(saved);model=saved;selected=model.top;}catch(e){startupRecovery={model:saved,message:e.message};}}}catch(e){startupRecovery={model:null,message:e.message};}const fmt=x=>x===null?'—':x===0?'0':x.toPrecision(5);
 let diagramZoom=1;let shared=null,formDirty=false,sheetManager=null,treeEditor=null,groupEditor=null,fmeaUi=null,editingLocked=false,importUi=null,nodeIndex=new Map(),pendingChildren=new Set(),analysisSeq=0,drawSeq=0,latestAnalysis=null,diagramRoot=null,previousTop=null,collapsed=new Set();
@@ -61,7 +61,7 @@ $('delete').onclick=()=>{if(formDirty)return notice('先に入力中の変更を
 $('top').onchange=()=>change({...clone(model),top:$('top').value});for(const id of ['title','mission'])$(id).onchange=()=>change({...clone(model),[id]:$(id).value});
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);}
 $('save').onclick=()=>download(new Blob([JSON.stringify(model,null,2)],{type:'application/json'}),'fta-model.json');$('load').onchange=async e=>{try{const file=e.target.files[0];if(!file)return;if(file.size>limits.maxModelBytes)throw Error('JSONは設定容量 '+getPerformance().modelMiB+'MiB 以下にしてください');const next=JSON.parse(await file.text());validate(next);selected=next.top;change(next);}catch(err){notice(err.message);}e.target.value='';};$('example').onclick=()=>{if(confirm('現在のモデルをEVサンプルに置き換えます。必要なら先にJSON保存してください。')){selected=sample.top;change(clone(sample));}};
-$('svg').onclick=()=>download(new Blob([lastSVG],{type:'image/svg+xml'}),'fta-tree.svg');$('png').onclick=()=>{const url=URL.createObjectURL(new Blob([lastSVG],{type:'image/svg+xml'})),img=new Image();img.onload=()=>{try{const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);c.toBlob(b=>{if(b)download(b,'fta-tree.png');else notice('PNGの生成に失敗しました。SVGをご利用ください。');});}catch(e){notice(e.message);}finally{URL.revokeObjectURL(url);}};img.onerror=()=>{URL.revokeObjectURL(url);notice('画像を生成できませんでした');};img.src=url;};initComputeUi();for(const [value,name]of systems)$('event-system').append(new Option(value+' / '+name,value));render();
+$('svg').onclick=()=>download(new Blob([lastSVG],{type:'image/svg+xml'}),'fta-tree.svg');$('png').onclick=()=>{const url=URL.createObjectURL(new Blob([lastSVG],{type:'image/svg+xml'})),img=new Image();img.onload=()=>{try{if(img.width>32000||img.height>32000||img.width*img.height>32000000)throw Error('PNG出力には図が大きすぎます。表示する枝を絞るかSVGを使ってください。');const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);c.toBlob(b=>{if(b)download(b,'fta-tree.png');else notice('PNGの生成に失敗しました。SVGをご利用ください。');});}catch(e){notice(e.message);}finally{URL.revokeObjectURL(url);}};img.onerror=()=>{URL.revokeObjectURL(url);notice('画像を生成できませんでした');};img.src=url;};initComputeUi();for(const [value,name]of systems)$('event-system').append(new Option(value+' / '+name,value));render();
 for(const id of ['label','prob','type','children','title','mission','node-group','event-code','event-system'])$(id).addEventListener('input',()=>{formDirty=true;shared?.draftChanged();});
 sheetManager=setupSheets({getModel:()=>model,isUnsaved:()=>storageState.saving||!!storageState.error||formDirty||!!shared?.unsaved||!!groupEditor?.pending||!!fmeaUi?.pending});
 shared=setupCollaboration({onSaved:cloud=>{if(!cloud||location.hash.includes('room='))sheetManager?.remember(cloud);},getModel:()=>model,setModel:next=>{treeEditor?.reset();formDirty=false;model=next;render();},isDraft:()=>formDirty||!!treeEditor?.pending||!!groupEditor?.pending||!!fmeaUi?.pending||!!importUi?.pending,lock:locked=>{editingLocked=locked;document.querySelectorAll('#editor input,#editor select,#editor button,.settings input,.settings select,#add,#add-child,#new-child-type,#delete,#example,#load,#tree-controls button,#tree-controls select,#manage-groups,#fmea-open').forEach(el=>el.disabled=locked);treeEditor?.setLocked(locked);}});

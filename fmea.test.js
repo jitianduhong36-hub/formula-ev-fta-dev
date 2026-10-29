@@ -1,4 +1,4 @@
-import {configurePerformance,defaultPerformance} from './performance-config.js?v=capacity1';
+import {configurePerformance,defaultPerformance} from './performance-config.js?v=capacity2';
 import test from 'node:test';import assert from 'node:assert/strict';import {performance} from 'node:perf_hooks';
 import {sample} from './sample.js';import {validate} from './engine.js';import {generateFmea,extractPaths} from './fmea-engine.js';import {rowId,ensureFmea} from './fmea-model.js';import {autoOccurrence,rpn,draftNotice} from './fmea-config.js';import {mergeModels} from './collaboration.js';import {fmeaCsv,fmeaXlsx,partsFromCsv,partTemplate,escapeCsv,workbookTables} from './fmea-export.js';import {limits,modelSize,sizeMessage} from './limits.js';
 const clone=x=>structuredClone(x),b=(id,p=.1)=>({id,label:id,type:'BASIC',p}),g=(id,type,children)=>({id,label:id,type,children}),m=nodes=>({version:1,title:'test',mission:'1走行',top:'T',nodes});

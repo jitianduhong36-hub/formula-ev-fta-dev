@@ -1,12 +1,12 @@
-import {getPerformance} from './performance-config.js?v=capacity1';
-import {limits} from './limits.js?v=capacity1';
-import {readImportFile} from './read-import.js?v=capacity1';
-import {importFields,suggestMapping,guessHeader,planTableImport} from './table-import.js?v=capacity1';
-import {trees,addTree,registerRoot,mergeTreeModels,branchOperation,exportBranch} from './tree-library.js?v=capacity1';
-import {descendants,parentsOf} from './tree-edit.js?v=capacity1';
-import {displayId} from './event-codes.js?v=capacity1';
-import {validate} from './engine.js?v=capacity1';
-import {rpn} from './fmea-config.js?v=capacity1';
+import {getPerformance} from './performance-config.js?v=capacity2';
+import {limits} from './limits.js?v=capacity2';
+import {readImportFile} from './read-import.js?v=capacity2';
+import {importFields,suggestMapping,guessHeader,planTableImport} from './table-import.js?v=capacity2';
+import {trees,addTree,registerRoot,mergeTreeModels,branchOperation,exportBranch} from './tree-library.js?v=capacity2';
+import {descendants,parentsOf} from './tree-edit.js?v=capacity2';
+import {displayId} from './event-codes.js?v=capacity2';
+import {validate} from './engine.js?v=capacity2';
+import {rpn} from './fmea-config.js?v=capacity2';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function setupImportUi({getModel,applyModel,isDraft,navigate,selectEvent,onDraft=()=>{}}){
  const $=id=>document.getElementById(id);let sheets=[],fileName='',plan=null,base='',source=null,branchPlan=null,branchBase='',editRecord=null,treePlan=null,treeBase='',treeFileName='',readGeneration=0;

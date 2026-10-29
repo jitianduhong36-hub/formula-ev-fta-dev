@@ -1,4 +1,4 @@
-import {getPerformance} from './performance-config.js?v=capacity1';
+import {getPerformance} from './performance-config.js?v=capacity2';
 export const limits={get maxNodes(){return getPerformance().maxNodes;},legacyBytes:200000,get maxModelBytes(){return getPerformance().modelMiB*1024*1024;},warningRatio:.85};
 export function modelSize(model){return new TextEncoder().encode(JSON.stringify(model,null,2)).length;}
 export function sizeMessage(model){const bytes=modelSize(model),size=(bytes/1024/1024).toFixed(2)+'MiB / '+getPerformance().modelMiB+'MiB';return {bytes,over:bytes>limits.maxModelBytes,warning:bytes>=limits.maxModelBytes*limits.warningRatio,text:'モデルサイズ：'+size+' ／ '+model.nodes.length.toLocaleString()+' / '+limits.maxNodes.toLocaleString()+'事象'+(bytes>=limits.maxModelBytes*limits.warningRatio?'。設定上限に近づいています。':'')};}

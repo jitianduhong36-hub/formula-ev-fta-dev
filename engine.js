@@ -1,10 +1,10 @@
-import {validateImportedRows} from './import-validation.js?v=capacity1';
-import {validateTrees} from './tree-metadata.js?v=capacity1';
-import {validateGroups} from './groups.js?v=capacity1';
-import {limits,validateSize} from './limits.js?v=capacity1';
-import {validateFmea} from './fmea-model.js?v=capacity1';
-import {getPerformance} from './performance-config.js?v=capacity1';
-import {postOrder} from './graph-order.js?v=capacity1';
+import {validateImportedRows} from './import-validation.js?v=capacity2';
+import {validateTrees} from './tree-metadata.js?v=capacity2';
+import {validateGroups} from './groups.js?v=capacity2';
+import {limits,validateSize} from './limits.js?v=capacity2';
+import {validateFmea} from './fmea-model.js?v=capacity2';
+import {getPerformance} from './performance-config.js?v=capacity2';
+import {postOrder} from './graph-order.js?v=capacity2';
 export function validate(m){
  if(!m||m.version!==1||!Array.isArray(m.nodes)||m.nodes.length>limits.maxNodes)throw Error('形式が不正です（version:1、事象数上限 '+limits.maxNodes.toLocaleString()+'件。「動作設定」で変更可能）');
  validateSize(m);validateFmea(m);validateImportedRows(m);const map=new Map();

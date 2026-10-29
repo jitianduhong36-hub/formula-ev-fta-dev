@@ -1,10 +1,10 @@
-import {validate} from './engine.js?v=capacity1';
-import {descendants,connect,disconnect,moveConnection} from './tree-edit.js?v=capacity1';
-import {ensureFmea,rowId,splitRowId} from './fmea-model.js?v=capacity1';
-import {nextEventCode,displayId} from './event-codes.js?v=capacity1';
+import {validate} from './engine.js?v=capacity2';
+import {descendants,connect,disconnect,moveConnection} from './tree-edit.js?v=capacity2';
+import {ensureFmea,rowId,splitRowId} from './fmea-model.js?v=capacity2';
+import {nextEventCode,displayId} from './event-codes.js?v=capacity2';
 const copy=x=>structuredClone(x),fresh=prefix=>prefix+crypto.randomUUID();
-import {trees} from './tree-metadata.js?v=capacity1';
-export {trees} from './tree-metadata.js?v=capacity1';
+import {trees} from './tree-metadata.js?v=capacity2';
+export {trees} from './tree-metadata.js?v=capacity2';
 export function registerRoot(model,rootId,title){const m=copy(model);m.trees=copy(trees(m));if(!m.nodes.some(n=>n.id===rootId))throw Error('登録する事象がありません');if(m.trees.some(t=>t.rootId===rootId))throw Error('このルートは登録済みです');m.trees.push({id:fresh('tree-'),rootId,title:title.trim()});validate(m);return m;}
 export function addTree(model,title){if(!title.trim())throw Error('木の名前を入力してください');const m=copy(model);m.trees=copy(trees(m));const id=fresh('E_');m.nodes.push({id,code:nextEventCode(m,'EVT'),system:'EVT',label:title.trim(),type:'BASIC',p:0});m.trees.push({id:fresh('tree-'),rootId:id,title:title.trim()});m.top=id;validate(m);return m;}
 export function branchOperation(model,{child,parent,from,mode}){

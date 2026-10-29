@@ -1,5 +1,5 @@
-import {views,overview,searchWorkspace} from './workspace-model.js?v=capacity1';
-import {displayId} from './event-codes.js?v=capacity1';
+import {views,overview,searchWorkspace} from './workspace-model.js?v=capacity2';
+import {displayId} from './event-codes.js?v=capacity2';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const glyph={home:'⌂',fta:'⑂',fmea:'▦',parts:'◇',roadmap:'↗',storage:'▤',help:'?',trees:'⑂',imports:'↓',performance:'⚙'};
 export function setupWorkspace({getModel,isDraft,selectEvent,applyModel}){

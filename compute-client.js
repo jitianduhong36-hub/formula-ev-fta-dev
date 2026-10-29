@@ -1,4 +1,4 @@
-import {getPerformance} from './performance-config.js?v=capacity1';
+import {getPerformance} from './performance-config.js?v=capacity2';
 const jobs=new Map();function state(owner,running){if(typeof dispatchEvent!=='undefined')dispatchEvent(new CustomEvent('compute:state',{detail:{owner,running}}));}
 
 export function cancelJob(owner,reason='ユーザーが中断しました'){const job=jobs.get(owner);if(job){jobs.delete(owner);state(owner,false);job.worker.terminate();clearTimeout(job.timer);clearInterval(job.ticker);const e=Error(reason);e.code='CANCELLED';job.reject(e);}}

@@ -1,11 +1,11 @@
-import {getPerformance} from './performance-config.js?v=capacity1';
-import {runJob,cancelJob,progressText} from './compute-client.js?v=capacity1';
-import {displayId} from './event-codes.js?v=capacity1';
-import {generateFmea} from './fmea-engine.js?v=capacity1';
-import {draftNotice,fmeaConfig,textFields,validScore} from './fmea-config.js?v=capacity1';
-import {ensureFmea,splitRowId} from './fmea-model.js?v=capacity1';
-import {fmeaCsv,fmeaXlsx,partTemplate,partsFromCsv} from './fmea-export.js?v=capacity1';
-import {limits} from './limits.js?v=capacity1';
+import {getPerformance} from './performance-config.js?v=capacity2';
+import {runJob,cancelJob,progressText} from './compute-client.js?v=capacity2';
+import {displayId} from './event-codes.js?v=capacity2';
+import {generateFmea} from './fmea-engine.js?v=capacity2';
+import {draftNotice,fmeaConfig,textFields,validScore} from './fmea-config.js?v=capacity2';
+import {ensureFmea,splitRowId} from './fmea-model.js?v=capacity2';
+import {fmeaCsv,fmeaXlsx,partTemplate,partsFromCsv} from './fmea-export.js?v=capacity2';
+import {limits} from './limits.js?v=capacity2';
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c])),copy=x=>JSON.parse(JSON.stringify(x));
 const labels={function:'機能',failureMode:'故障モード（FTA名称は候補）',cause:'故障原因',controls:'現行対策',detection:'検出手段',recommended:'推奨対策',note:'備考（手入力）'};
 export function setupFmea({getModel,applyModel,isBlocked,notice,onDraft}){

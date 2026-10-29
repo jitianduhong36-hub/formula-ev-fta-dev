@@ -1,5 +1,5 @@
-import {limits} from './limits.js?v=capacity1';
-import {fmeaConfig,textFields,validScore} from './fmea-config.js?v=capacity1';
+import {limits} from './limits.js?v=capacity2';
+import {fmeaConfig,textFields,validScore} from './fmea-config.js?v=capacity2';
 const copy=x=>x===undefined?undefined:JSON.parse(JSON.stringify(x)),object=x=>x&&typeof x==='object'&&!Array.isArray(x);
 export function rowId(basic,top){return 'FM:'+encodeURIComponent(basic)+'@'+encodeURIComponent(top);}
 export function splitRowId(id){const m=/^FM:([^@]+)@([^@]+)$/.exec(id);try{return m?{basicId:decodeURIComponent(m[1]),topId:decodeURIComponent(m[2])}:null;}catch{return null;}}

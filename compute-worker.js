@@ -1,7 +1,7 @@
-import {configurePerformance} from './performance-config.js?v=capacity1';
-import {analyze} from './engine.js?v=capacity1';
-import {renderDiagram} from './diagram.js?v=capacity1';
-import {generateFmea} from './fmea-engine.js?v=capacity1';
+import {configurePerformance} from './performance-config.js?v=capacity2';
+import {analyze} from './engine.js?v=capacity2';
+import {renderDiagram} from './diagram.js?v=capacity2';
+import {generateFmea} from './fmea-engine.js?v=capacity2';
 self.onmessage=async({data})=>{const started=Date.now();try{configurePerformance(data.settings);const progress=p=>self.postMessage({type:'progress',...p});progress({stage:'開始'});const deadline=started+data.settings.seconds*1000;let result;
  if(data.kind==='analysis')result=analyze(data.model,{deadline,onProgress:progress});
  else if(data.kind==='diagram'){progress({stage:'図の配置'});result=renderDiagram(data.model,data.options);}

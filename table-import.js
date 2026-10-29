@@ -1,6 +1,6 @@
-import {ensureFmea} from './fmea-model.js?v=capacity1';
-import {validate} from './engine.js?v=capacity1';
-import {displayId} from './event-codes.js?v=capacity1';
+import {ensureFmea} from './fmea-model.js?v=capacity2';
+import {validate} from './engine.js?v=capacity2';
+import {displayId} from './event-codes.js?v=capacity2';
 export const importFields=[['partId','部品ID'],['name','部品名称'],['subsystem','系統・サブシステム'],['function','機能'],['failureMode','故障モード'],['cause','故障原因'],['localEffect','局所的影響'],['upperEffect','上位影響'],['endEffect','最終影響'],['S','S（重大度）'],['O','O（発生度）'],['D','D（検出度）'],['controls','現行対策'],['detection','検出手段'],['recommended','推奨対策'],['note','備考'],['basicIds','対応する基本事象ID']];
 const aliases={partId:['部品ID','部品番号','品番','componentid','partid','partnumber'],name:['name','部品名称','部品名','名称','コンポーネント','component','partname','部品・サブシステム'],subsystem:['サブシステム','系統','subsystem'],function:['機能','function'],failureMode:['故障モード','故障モード候補','failuremode'],cause:['故障原因','原因','failurecause','cause'],localEffect:['局所的影響','localeffect'],upperEffect:['上位影響','nexthighereffect'],endEffect:['最終影響','最終影響(トップ事象)','endeffect'],S:['S','S（重大度）','重大度','severity'],O:['O','O（発生度）','発生度','occurrence'],D:['D','D（検出度）','検出度','detectionrating'],controls:['現行対策','現行の対策・検出手段','currentcontrols'],detection:['検出手段','検出方法','detection'],recommended:['推奨対策','対策','recommendedactions'],note:['備考','notes','note'],basicIds:['基本事象ID','対応事象ID','基本事象ID（JSON配列）','basicids']};
 const norm=s=>String(s).normalize('NFKC').toLowerCase().replace(/[\s_\-()（）]/g,'');

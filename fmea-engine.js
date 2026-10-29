@@ -1,9 +1,9 @@
-import {postOrder} from './graph-order.js?v=capacity1';
-import {displayId,systemText} from './event-codes.js?v=capacity1';
-import {validate,analyze} from './engine.js?v=capacity1';
-import {eventGroup} from './groups.js?v=capacity1';
-import {draftNotice,fmeaConfig,autoOccurrence,rpn,validScore} from './fmea-config.js?v=capacity1';
-import {rowId} from './fmea-model.js?v=capacity1';
+import {postOrder} from './graph-order.js?v=capacity2';
+import {displayId,systemText} from './event-codes.js?v=capacity2';
+import {validate,analyze} from './engine.js?v=capacity2';
+import {eventGroup} from './groups.js?v=capacity2';
+import {draftNotice,fmeaConfig,autoOccurrence,rpn,validScore} from './fmea-config.js?v=capacity2';
+import {rowId} from './fmea-model.js?v=capacity2';
 export function graphIndex(model){const nodes=validate(model),parents=new Map(model.nodes.map(n=>[n.id,[]]));for(const n of model.nodes)for(const id of new Set(n.children||[]))parents.get(id).push(n.id);return {nodes,parents,paths:new Map()};}
 export function reachableFrom(nodes,top){const seen=new Set(),stack=[top];while(stack.length){const id=stack.pop();if(seen.has(id))continue;seen.add(id);for(const c of nodes.get(id).children||[])if(!seen.has(c))stack.push(c);}return seen;}
 export function extractPaths(model,basic,top,limit=fmeaConfig.maxPathsPerRow,index=graphIndex(model)){

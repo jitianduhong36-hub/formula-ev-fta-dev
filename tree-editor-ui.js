@@ -1,7 +1,7 @@
-import {getPerformance} from './performance-config.js?v=capacity1';
-import {displayId} from './event-codes.js?v=capacity1';
-import {matchesEvent,eventGroup} from './groups.js?v=capacity1';
-import {parentsOf,descendants,connect,disconnect,moveConnection,deleteEvent} from './tree-edit.js?v=capacity1';
+import {getPerformance} from './performance-config.js?v=capacity2';
+import {displayId} from './event-codes.js?v=capacity2';
+import {matchesEvent,eventGroup} from './groups.js?v=capacity2';
+import {parentsOf,descendants,connect,disconnect,moveConnection,deleteEvent} from './tree-edit.js?v=capacity2';
 const $=id=>document.getElementById(id),copy=x=>JSON.parse(JSON.stringify(x)),same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 export function setupTreeEditor({getModel,getSelected,applyModel,isFormDirty,notice,selectEvent}){
  let undo=[],redo=[],pending=null,locked=false,indexModel=null,indexNodes=null,indexParents=null;

@@ -1,4 +1,4 @@
-import {parseDelimited,tableFromJson} from './table-import.js?v=capacity1';
+import {parseDelimited,tableFromJson} from './table-import.js?v=capacity2';
 export async function readImportFile(file,{encoding='utf-8'}={}){
  if(file.size>10*1024*1024)throw Error('入力ファイルは10MiB以下にしてください');const extension=file.name.split('.').pop().toLowerCase();
  if(['xlsx','xls','xlsm','xlsb','ods'].includes(extension))return new Promise(async(resolve,reject)=>{let worker;try{worker=new Worker(new URL('./spreadsheet-worker.js',import.meta.url));}catch(e){reject(Error('Excel読込を開始できません。CSVでも取り込めます。'+e.message));return;}const timer=setTimeout(()=>{worker.terminate();reject(Error('Excel読込の時間上限です。必要なシートだけのファイルかCSVにしてください'));},12000);worker.onmessage=e=>{clearTimeout(timer);worker.terminate();if(e.data.error)reject(Error(e.data.error));else resolve(e.data.sheets);};worker.onerror=()=>{clearTimeout(timer);worker.terminate();reject(Error('Excel読込に失敗しました。ファイル形式・パスワード保護を確認してください'));};try{const data=await file.arrayBuffer();worker.postMessage(data,[data]);}catch(e){clearTimeout(timer);worker.terminate();reject(e);}});

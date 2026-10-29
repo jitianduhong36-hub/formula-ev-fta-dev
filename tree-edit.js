@@ -1,4 +1,4 @@
-import {validate} from './engine.js?v=capacity1';
+import {validate} from './engine.js?v=capacity2';
 const copy=x=>JSON.parse(JSON.stringify(x));
 export const parentsOf=(model,id)=>model.nodes.filter(n=>n.type!=='BASIC'&&n.children.includes(id));
 export function descendants(model,id){const map=new Map(model.nodes.map(n=>[n.id,n])),seen=new Set(),stack=[id];while(stack.length){const x=stack.pop();if(seen.has(x))continue;seen.add(x);for(const c of map.get(x)?.children||[])stack.push(c);}return seen;}
