@@ -1,6 +1,7 @@
-import {nextEventCode} from './event-codes.js?v=imports2';
-import {validate} from './engine.js?v=imports2';
-import {newNodeId} from './collaboration.js?v=imports2';
+import {saveModel} from './model-storage.js?v=capacity1';
+import {nextEventCode} from './event-codes.js?v=capacity1';
+import {validate} from './engine.js?v=capacity1';
+import {newNodeId} from './collaboration.js?v=capacity1';
 const copy=x=>JSON.parse(JSON.stringify(x));
 export function localKey(hash){const id=new URLSearchParams(hash.replace(/^#/,'' )).get('local');return id&&/^[a-f0-9-]{36}$/i.test(id)?'fta-dev-local:'+id:'formula-ev-fta-dev-v1';}
 export function blankSheet(title='新しい解析'){return {version:1,title:title.trim()||'新しい解析',mission:'未設定（評価期間を入力）',top:'TOP',nodes:[{id:'TOP',label:'解析したい故障（名称を変更）',type:'BASIC',p:0}]};}
@@ -19,7 +20,7 @@ export function setupSheets({getModel,isUnsaved}){
  function remember(cloud){const url=location.origin+location.pathname+location.hash;if(!location.hash)return;const entry={name:getModel().title||'名称未設定',url,cloud};entries=[entry,...entries.filter(e=>e.url!==url)].slice(0,100);try{localStorage.setItem('fta-dev-sheet-bookmarks',JSON.stringify(entries));}catch{}render();}
  document.getElementById('new-sheet').onclick=()=>{if(isUnsaved())return alert('先に入力中の変更を反映し、クラウド保存を確認してください。');document.getElementById('new-sheet-dialog').showModal();};
  document.getElementById('new-sheet-cancel').onclick=()=>document.getElementById('new-sheet-dialog').close();
- document.getElementById('new-sheet-form').onsubmit=e=>{e.preventDefault();if(isUnsaved())return alert('現在の変更を先に保存してください');const title=document.getElementById('new-sheet-name').value;const cloud=document.getElementById('new-sheet-storage').value==='cloud',id=crypto.randomUUID();const model=blankSheet(title);try{localStorage.setItem('fta-dev-local:'+id,JSON.stringify(model));}catch{return alert('端末内に新規シートを準備できません。保存容量を確認してください。');}location.href=location.origin+location.pathname+'#local='+id+(cloud?'&createcloud=1':'');location.reload();};
+ document.getElementById('new-sheet-form').onsubmit=async e=>{e.preventDefault();if(isUnsaved())return alert('現在の変更を先に保存してください');const title=document.getElementById('new-sheet-name').value;const cloud=document.getElementById('new-sheet-storage').value==='cloud',id=crypto.randomUUID();const model=blankSheet(title);try{await saveModel('fta-dev-local:'+id,model);}catch{return alert('端末内に新規シートを準備できません。保存容量を確認してください。');}location.href=location.origin+location.pathname+'#local='+id+(cloud?'&createcloud=1':'');location.reload();};
  render();if(location.hash.startsWith('#local=')&&!location.hash.includes('createcloud='))remember(false);
  return {remember};
 }

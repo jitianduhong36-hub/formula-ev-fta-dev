@@ -11,7 +11,7 @@ export const systemText=n=>systems.find(s=>s[0]===n.system)?.join(' ')||'';
 export function nextEventCode(model,system='EVT',exceptId){
  if(!systems.some(s=>s[0]===system))throw Error('系統を選択してください');
  const used=new Set(model.nodes.filter(n=>n.id!==exceptId).map(n=>displayId(n).toUpperCase()));
- for(let i=1;i<10000;i++){const value=system+'-'+String(i).padStart(3,'0');if(!used.has(value))return value;}
+ for(let i=1;i<=1000000;i++){const value=system+'-'+String(i).padStart(3,'0');if(!used.has(value))return value;}
  throw Error('この系統の採番上限です。表示IDを手入力してください');
 }
 export function validateEventCodes(model){

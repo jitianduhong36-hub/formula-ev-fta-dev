@@ -1,7 +1,8 @@
-import {validate} from './engine.js?v=imports2';
+import {validate} from './engine.js?v=capacity1';
 const copy=x=>JSON.parse(JSON.stringify(x));
 export const parentsOf=(model,id)=>model.nodes.filter(n=>n.type!=='BASIC'&&n.children.includes(id));
-export function descendants(model,id){const map=new Map(model.nodes.map(n=>[n.id,n])),seen=new Set();function walk(x){if(seen.has(x))return;seen.add(x);const n=map.get(x);if(n?.type!=='BASIC')n?.children.forEach(walk);}walk(id);return seen;}
+export function descendants(model,id){const map=new Map(model.nodes.map(n=>[n.id,n])),seen=new Set(),stack=[id];while(stack.length){const x=stack.pop();if(seen.has(x))continue;seen.add(x);for(const c of map.get(x)?.children||[])stack.push(c);}return seen;}
+
 function finish(model,warnings=[]){if(model.trees){const kept=model.trees.filter(t=>model.nodes.some(n=>n.id===t.rootId));if(kept.length!==model.trees.length)warnings.push('削除されたルートの木登録も解除します。');model.trees=kept.length?kept:[{id:'tree:'+model.top,rootId:model.top,title:model.title||'現在の木'}];}for(const n of model.nodes)if(n.type!=='BASIC'&&!n.children.length){warnings.push('「'+n.label+'」は子がなくなるため、基本事象（確率0の仮置き）へ変わります。必ず確率を設定するか、原因を追加してください。');n.type='BASIC';n.p=0;delete n.children;}validate(model);return {model,warnings};}
 export function connect(model,parentId,childId){const next=copy(model),p=next.nodes.find(n=>n.id===parentId);if(!p||!next.nodes.some(n=>n.id===childId))throw Error('接続する事象が見つかりません');if(parentId===childId||descendants(model,childId).has(parentId))throw Error('この接続は循環するため作れません（親が自分の下へ戻ります）');if((p.children||[]).includes(childId))throw Error('すでに接続されています');const warnings=[];if(p.type==='BASIC'){warnings.push('「'+p.label+'」はORゲートに変わります。入力済みの基本事象確率はゲートの計算に引き継がれません。');p.type='OR';p.children=[];delete p.p;}p.children.push(childId);return finish(next,warnings);}
 export function disconnect(model,parentId,childId){const next=copy(model),p=next.nodes.find(n=>n.id===parentId);if(!p?.children?.includes(childId))throw Error('この接続はすでにありません');p.children=p.children.filter(id=>id!==childId);return finish(next);}

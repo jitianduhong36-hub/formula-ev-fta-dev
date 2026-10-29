@@ -1,5 +1,5 @@
-import {mergeFmea} from './fmea-model.js?v=imports2';
-import {validate} from './engine.js?v=imports2';
+import {mergeFmea} from './fmea-model.js?v=capacity1';
+import {validate} from './engine.js?v=capacity1';
 const copy=x=>JSON.parse(JSON.stringify(x)),equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 // Three-way merge: edits to different fields/nodes compose; same-field edits conflict.
 export function mergeModels(base,local,remote){
