@@ -1,0 +1,7 @@
+import {parseDelimited,tableFromJson} from './table-import.js?v=imports1';
+export async function readImportFile(file,{encoding='utf-8'}={}){
+ if(file.size>10*1024*1024)throw Error('入力ファイルは10MiB以下にしてください');const extension=file.name.split('.').pop().toLowerCase();
+ if(['xlsx','xls','xlsm','xlsb','ods'].includes(extension))return new Promise(async(resolve,reject)=>{let worker;try{worker=new Worker(new URL('./spreadsheet-worker.js',import.meta.url));}catch(e){reject(Error('Excel読込を開始できません。CSVでも取り込めます。'+e.message));return;}const timer=setTimeout(()=>{worker.terminate();reject(Error('Excel読込の時間上限です。必要なシートだけのファイルかCSVにしてください'));},12000);worker.onmessage=e=>{clearTimeout(timer);worker.terminate();if(e.data.error)reject(Error(e.data.error));else resolve(e.data.sheets);};worker.onerror=()=>{clearTimeout(timer);worker.terminate();reject(Error('Excel読込に失敗しました。ファイル形式・パスワード保護を確認してください'));};try{const data=await file.arrayBuffer();worker.postMessage(data,[data]);}catch(e){clearTimeout(timer);worker.terminate();reject(e);}});
+ const text=new TextDecoder(encoding,{fatal:true}).decode(await file.arrayBuffer());if(extension==='json'){const value=JSON.parse(text);if(value.nodes)throw Error('FTAのJSONは「別のFTAを追加」から取り込んでください');return [{name:'JSON',rows:tableFromJson(value)}];}
+ if(!['csv','tsv','txt'].includes(extension))throw Error('対応形式：CSV / TSV / TXT / XLSX / XLS / XLSM / XLSB / ODS / 部品JSON');return [{name:extension.toUpperCase(),rows:parseDelimited(text,extension==='tsv'?'\t':undefined)}];
+}

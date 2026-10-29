@@ -1,17 +1,18 @@
-import {setupWorkspace} from './workspace-ui.js?v=dev2';
-import {systems,displayId,nextEventCode} from './event-codes.js?v=dev2';
-import {setupFmea} from './fmea-ui.js?v=dev2';
-import {limits,sizeMessage} from './limits.js?v=dev2';
-import {eventGroup,groupTheme,matchesEvent} from './groups.js?v=dev2';
-import {setupGroups} from './group-ui.js?v=dev2';
-import {renderDiagram} from './diagram.js?v=dev2';
-import {analyze,validate} from './engine.js?v=dev2';import {sample} from './sample.js?v=dev2';
-import {newNodeId} from './collaboration.js?v=dev2';import {setupCollaboration} from './collaboration-ui.js?v=dev2';
-import {localKey,addChild,setupSheets} from './sheets.js?v=dev2';
-import {setupTreeEditor} from './tree-editor-ui.js?v=dev2';
+import {setupImportUi} from './import-ui.js?v=imports1';
+import {setupWorkspace} from './workspace-ui.js?v=imports1';
+import {systems,displayId,nextEventCode} from './event-codes.js?v=imports1';
+import {setupFmea} from './fmea-ui.js?v=imports1';
+import {limits,sizeMessage} from './limits.js?v=imports1';
+import {eventGroup,groupTheme,matchesEvent} from './groups.js?v=imports1';
+import {setupGroups} from './group-ui.js?v=imports1';
+import {renderDiagram} from './diagram.js?v=imports1';
+import {analyze,validate} from './engine.js?v=imports1';import {sample} from './sample.js?v=imports1';
+import {newNodeId} from './collaboration.js?v=imports1';import {setupCollaboration} from './collaboration-ui.js?v=imports1';
+import {localKey,addChild,setupSheets} from './sheets.js?v=imports1';
+import {setupTreeEditor} from './tree-editor-ui.js?v=imports1';
 const $=id=>document.getElementById(id),clone=x=>JSON.parse(JSON.stringify(x)),esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 let model=clone(sample),selected='TOP',lastSVG='';try{const saved=localStorage.getItem(localKey(location.hash));if(saved){const parsed=JSON.parse(saved);validate(parsed);model=parsed;selected=model.top;}}catch{}const fmt=x=>x===null?'—':x===0?'0':x.toPrecision(5);
-let diagramZoom=1;let shared=null,formDirty=false,sheetManager=null,treeEditor=null,groupEditor=null,fmeaUi=null,editingLocked=false;
+let diagramZoom=1;let shared=null,formDirty=false,sheetManager=null,treeEditor=null,groupEditor=null,fmeaUi=null,editingLocked=false,importUi=null;
 function notice(s){$('error').textContent=s;}function persist(){try{localStorage.setItem(shared?.storageKey||localKey(location.hash),JSON.stringify(model));}catch{notice('端末内の保存ができません。JSON保存をご利用ください。');}}
 function options(){return model.nodes.map(n=>`<option value="${esc(n.id)}">${esc(displayId(n))} / ${esc(n.label)}</option>`).join('');}
 function edit(id){if(formDirty&&id!==selected){notice('先に入力中の変更を反映してください。');return;}selected=id;const n=model.nodes.find(n=>n.id===id);$('editid').textContent=displayId(n);$('event-code').value=n.code||'';$('event-system').value=n.system||'';$('internal-id').textContent='内部ID：'+n.id;$('label').value=n.label;$('type').value=n.type;$('prob').value=n.p??0.001;renderGroupSelect(n);$('child-search').value='';$('children-selected-only').checked=false;$('children').innerHTML=options();for(const o of $('children').options){o.selected=(n.children||[]).includes(o.value);o.disabled=o.value===id;}renderChildChecks();toggle();treeEditor?.render();for(const b of $('nodes').children)b.classList.toggle('selected',b.dataset.id===id);markDiagramSelection();}
@@ -50,7 +51,7 @@ $('save').onclick=()=>download(new Blob([JSON.stringify(model,null,2)],{type:'ap
 $('svg').onclick=()=>download(new Blob([lastSVG],{type:'image/svg+xml'}),'fta-tree.svg');$('png').onclick=()=>{const url=URL.createObjectURL(new Blob([lastSVG],{type:'image/svg+xml'})),img=new Image();img.onload=()=>{try{const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);c.toBlob(b=>{if(b)download(b,'fta-tree.png');else notice('PNGの生成に失敗しました。SVGをご利用ください。');});}catch(e){notice(e.message);}finally{URL.revokeObjectURL(url);}};img.onerror=()=>{URL.revokeObjectURL(url);notice('画像を生成できませんでした');};img.src=url;};for(const [value,name]of systems)$('event-system').append(new Option(value+' / '+name,value));render();
 for(const id of ['label','prob','type','children','title','mission','node-group','event-code','event-system'])$(id).addEventListener('input',()=>{formDirty=true;shared?.draftChanged();});
 sheetManager=setupSheets({getModel:()=>model,isUnsaved:()=>formDirty||!!shared?.unsaved||!!groupEditor?.pending||!!fmeaUi?.pending});
-shared=setupCollaboration({onSaved:cloud=>{if(!cloud||location.hash.includes('room='))sheetManager?.remember(cloud);},getModel:()=>model,setModel:next=>{treeEditor?.reset();formDirty=false;model=next;render();},isDraft:()=>formDirty||!!treeEditor?.pending||!!groupEditor?.pending||!!fmeaUi?.pending,lock:locked=>{editingLocked=locked;document.querySelectorAll('#editor input,#editor select,#editor button,.settings input,.settings select,#add,#add-child,#new-child-type,#delete,#example,#load,#tree-controls button,#tree-controls select,#manage-groups,#fmea-open').forEach(el=>el.disabled=locked);treeEditor?.setLocked(locked);}});
+shared=setupCollaboration({onSaved:cloud=>{if(!cloud||location.hash.includes('room='))sheetManager?.remember(cloud);},getModel:()=>model,setModel:next=>{treeEditor?.reset();formDirty=false;model=next;render();},isDraft:()=>formDirty||!!treeEditor?.pending||!!groupEditor?.pending||!!fmeaUi?.pending||!!importUi?.pending,lock:locked=>{editingLocked=locked;document.querySelectorAll('#editor input,#editor select,#editor button,.settings input,.settings select,#add,#add-child,#new-child-type,#delete,#example,#load,#tree-controls button,#tree-controls select,#manage-groups,#fmea-open').forEach(el=>el.disabled=locked);treeEditor?.setLocked(locked);}});
 $('add-child').onclick=()=>{if(formDirty)return notice('先に入力中の変更を反映してください。');try{const r=addChild(model,selected,$('new-child-type').value);selected=r.id;change(r.model);}catch(e){notice(e.message);}};
 treeEditor=setupTreeEditor({getModel:()=>model,getSelected:()=>selected,applyModel:change,isFormDirty:()=>formDirty,notice});treeEditor.setLocked(editingLocked);treeEditor.render();decorateEdges();
 $('discard-edit').onclick=()=>{if(!formDirty)return;if(confirm('フォームに入力中の内容を取り消し、反映済みの値へ戻しますか？')){formDirty=false;edit(selected);shared?.draftChanged();notice('入力を取り消しました。反映済みのモデルは変わりません。');}};
@@ -80,4 +81,6 @@ fmeaUi=setupFmea({getModel:()=>model,applyModel:change,isBlocked:()=>editingLock
 
 $('suggest-code').onclick=()=>{try{$('event-code').value=nextEventCode(model,$('event-system').value||'EVT',selected);formDirty=true;shared?.draftChanged();}catch(e){notice(e.message);}};
 
-setupWorkspace({getModel:()=>model,isDraft:()=>formDirty||!!treeEditor?.pending||!!groupEditor?.pending||!!fmeaUi?.pending,selectEvent:id=>selectAndLocate(id),applyModel:change});
+const workspaceUi=setupWorkspace({getModel:()=>model,isDraft:()=>formDirty||!!treeEditor?.pending||!!groupEditor?.pending||!!fmeaUi?.pending||!!importUi?.pending,selectEvent:id=>selectAndLocate(id),applyModel:change});
+
+importUi=setupImportUi({getModel:()=>model,applyModel:change,isDraft:()=>formDirty||!!treeEditor?.pending||!!groupEditor?.pending||!!fmeaUi?.pending,navigate:workspaceUi.navigate,selectEvent:selectAndLocate,onDraft:()=>shared?.draftChanged()});
