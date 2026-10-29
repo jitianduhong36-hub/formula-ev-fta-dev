@@ -1,6 +1,6 @@
-import {validateGroups} from './groups.js?v=dev1';
-import {limits,validateSize} from './limits.js?v=dev1';
-import {validateFmea} from './fmea-model.js?v=dev1';
+import {validateGroups} from './groups.js?v=dev2';
+import {limits,validateSize} from './limits.js?v=dev2';
+import {validateFmea} from './fmea-model.js?v=dev2';
 export function validate(m){
  if(!m||m.version!==1||!Array.isArray(m.nodes)||m.nodes.length>limits.maxNodes)throw Error('形式が不正です（version:1、最大300ノード）');
  validateSize(m);validateFmea(m);

@@ -1,4 +1,4 @@
-import {localKey} from './sheets.js?v=dev1';
+import {localKey} from './sheets.js?v=dev2';
 export function setupCollaboration({isDraft}){
  const $=id=>document.getElementById(id);
  function status(){$('sync-status').textContent='開発版 / 端末内保存';$('cloud-state').textContent=isDraft()?'入力中 · 変更の反映待ち':'開発版専用の端末内保存';}
